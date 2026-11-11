@@ -1,0 +1,24 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../data/site';
+---
+<Page title="Disclosure" path="/disclosure/" description="Who publishes Long Paddock, how Tourground makes money, how operator links work and how paid content is labelled.">
+  <h2>Who publishes this site</h2>
+  <p>Long Paddock is published by <a href={SITE.publisher.url}>Tourground</a>. Tourground runs a directory of verified travel companies and earns money from paid plans sold to those companies. Some travel brands listed in the Tourground directory are owned by Tourground's founders, and an operator we link to may be one of them.</p>
+
+  <h2>"Plan this trip" links</h2>
+  <p>Each story ends with a box that points to a verified local operator in the Tourground directory, currently <a href="https://outbackandreef.tourground.com/">Outback &amp; Reef</a> for Australia, along with a link to browse the directory itself. We choose the operator page that best matches the story. These links are part of how Tourground works, which is why we tell you about it here and in every box.</p>
+  <p>Long Paddock does not sell trips, take bookings or handle payments. If you contact an operator, your arrangement is with that operator.</p>
+
+  <h2>Editorial independence</h2>
+  <p>No company pays to be mentioned in a story, and operators do not see or approve stories before they are published. Facts about visas, parks and safety come from official sources, which we link.</p>
+
+  <h2>Paid content</h2>
+  <p>If we publish paid content, it will be labelled <strong>"Advertisement feature"</strong>: at the top of the story, on every card that links to it and in its plan box. Its links to the sponsor will carry <code>rel="sponsored"</code>. We have not published any paid content so far.</p>
+
+  <h2>Source links</h2>
+  <p>Links in a story's list of sources are citations and are marked <code>nofollow</code>.</p>
+
+  <h2>Questions</h2>
+  <p>Write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+</Page>

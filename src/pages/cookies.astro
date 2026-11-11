@@ -1,0 +1,9 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../data/site';
+---
+<Page title="Cookie policy" path="/cookies/" description="Long Paddock does not set cookies. This page explains what that means." kicker="Legal">
+  <p>Long Paddock does not set any cookies, and it does not use analytics, advertising or social media tracking scripts. Fonts and images are served from this site, so loading a page does not send your browser to third-party services.</p>
+  <p>If you follow a link to another website, such as an official park page or an operator in the Tourground directory, that site may set its own cookies under its own policy.</p>
+  <p>If we ever add cookies, we will list each one here and ask for your consent where the law requires it. Questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+</Page>

@@ -1,0 +1,22 @@
+---
+import { SITE } from '../data/site';
+interface Props { operator: { name: string; url: string; summary: string }; sponsored?: boolean }
+const { operator, sponsored = false } = Astro.props;
+---
+<aside class="plan-box" aria-labelledby="plan-title">
+  <p class="plan-eyebrow">{sponsored ? 'Advertisement feature' : 'Plan this trip'}</p>
+  <h2 id="plan-title">Plan this trip with a local operator</h2>
+  <p>
+    <a class="plan-op" href={operator.url} rel={sponsored ? 'sponsored' : undefined}>{operator.name}</a> is a verified operator in the Tourground directory. {operator.summary}
+  </p>
+  <p class="plan-actions">
+    <a class="button" href={operator.url} rel={sponsored ? 'sponsored' : undefined}>Visit {operator.name}</a>
+    <a class="button button-quiet" href={SITE.publisher.directoryUrl}>Browse the Tourground directory</a>
+  </p>
+  <p class="plan-note">
+    {sponsored
+      ? 'This placement is paid for. '
+      : 'No operator pays to appear in our stories. '}
+    Long Paddock and the Tourground directory are both run by Tourground. <a href="/disclosure/">Read our disclosure</a>.
+  </p>
+</aside>

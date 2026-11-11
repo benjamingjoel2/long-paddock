@@ -1,0 +1,108 @@
+---
+import '@fontsource-variable/newsreader';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Crumb { name: string; href: string }
+interface Props {
+  title: string;
+  description: string;
+  crumbs?: Crumb[];
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  extraJsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  preloadImage?: { srcset: string; sizes: string; type: string };
+}
+
+const { title, description, crumbs = [], ogImage, ogType = 'website', extraJsonLd = [], noindex = false, preloadImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const fullTitle = Astro.url.pathname === '/' ? `${SITE.name}: ${SITE.tagline}` : `${title} | ${SITE.name}`;
+const og = ogImage ? new URL(ogImage, SITE.url).href : new URL('/og.jpg', SITE.url).href;
+
+const orgId = `${SITE.url}/#publisher`;
+const siteId = `${SITE.url}/#website`;
+const breadcrumbItems = [{ name: 'Home', href: '/' }, ...crumbs];
+const graph = [
+  {
+    '@type': 'Organization',
+    '@id': orgId,
+    name: SITE.publisher.name,
+    url: SITE.publisher.url,
+    email: SITE.email,
+    logo: { '@type': 'ImageObject', url: `${SITE.url}/favicon.svg` },
+  },
+  {
+    '@type': 'WebSite',
+    '@id': siteId,
+    name: SITE.name,
+    url: `${SITE.url}/`,
+    description: SITE.description,
+    inLanguage: SITE.lang,
+    publisher: { '@id': orgId },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${canonical}#breadcrumb`,
+    itemListElement: breadcrumbItems.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: new URL(c.href, SITE.url).href,
+    })),
+  },
+  ...extraJsonLd,
+];
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+---
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#FAF6EF" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/rss.xml" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
+    {preloadImage && (
+      <link rel="preload" as="image" type={preloadImage.type} imagesrcset={preloadImage.srcset} imagesizes={preloadImage.sizes} fetchpriority="high" />
+    )}
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={jsonLd} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      {crumbs.length > 0 && (
+        <nav class="crumbs wrap" aria-label="Breadcrumb">
+          <ol>
+            {breadcrumbItems.map((c, i) => (
+              <li>{i < breadcrumbItems.length - 1 ? <a href={c.href}>{c.name}</a> : <span aria-current="page">{c.name}</span>}</li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

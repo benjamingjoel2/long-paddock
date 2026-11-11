@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPosts } from '../../lib/posts';
+const posts = await getPosts();
+---
+<Base title="All stories" description="Every Long Paddock story about travelling in Australia, newest first." crumbs={[{ name: 'All stories', href: '/stories/' }]}>
+  <div class="wrap page-head">
+    <h1>All stories</h1>
+    <p class="standfirst">Every story we have published, newest first.</p>
+  </div>
+  <div class="wrap grid-3">
+    {posts.map((p) => <PostCard post={p} headingLevel="h2" />)}
+  </div>
+</Base>

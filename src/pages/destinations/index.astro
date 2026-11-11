@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { PHOTOS } from '../../data/photos';
+import { DESTINATIONS } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+const posts = await getPosts();
+---
+<Base title="Destinations" description="Long Paddock stories by destination: Sydney, Melbourne, the Red Centre, the Great Barrier Reef, the Top End, Tasmania, Western Australia and South Australia." crumbs={[{ name: 'Destinations', href: '/destinations/' }]}>
+  <div class="wrap page-head">
+    <h1>Destinations</h1>
+    <p class="standfirst">Australia is too big to see in one trip. Pick a region or two that suit your season and give each one time.</p>
+  </div>
+  <ul class="wrap dest-list">
+    {DESTINATIONS.map((d) => {
+      const n = posts.filter((p) => p.data.destinations.includes(d.id)).length;
+      return (
+        <li class="dest-row">
+          <Image src={PHOTOS[d.photo].src} alt="" widths={[320, 480, 640]} sizes="(min-width: 40rem) 240px, 100vw" loading="lazy" class="dest-row-img" />
+          <div>
+            <h2><a href={`/destinations/${d.id}/`}>{d.name}</a></h2>
+            <p class="meta">{d.state} · {n} {n === 1 ? 'story' : 'stories'}</p>
+            <p>{d.blurb}</p>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</Base>

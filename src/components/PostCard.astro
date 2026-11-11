@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import { PHOTOS } from '../data/photos';
+import { catName, fmtDate } from '../data/site';
+import { postHref, readingMinutes, type Post } from '../lib/posts';
+interface Props { post: Post; headingLevel?: 'h2' | 'h3'; size?: 'default' | 'compact' }
+const { post, headingLevel = 'h3', size = 'default' } = Astro.props;
+const photo = PHOTOS[post.data.hero];
+const H = headingLevel;
+---
+<article class={`card card-${size}`}>
+  {photo && (
+    <Image src={photo.src} alt="" widths={[400, 640, 800]} sizes="(min-width: 64rem) 380px, (min-width: 40rem) 45vw, 100vw" loading="lazy" decoding="async" class="card-img" />
+  )}
+  <div class="card-body">
+    <p class="kicker">
+      {post.data.advertisement && <span class="ad-label">Advertisement feature</span>}
+      {catName(post.data.categories[0])}
+    </p>
+    <H class="card-title"><a href={postHref(post)}>{post.data.title}</a></H>
+    {size === 'default' && <p class="card-desc">{post.data.description}</p>}
+    <p class="meta"><time datetime={post.data.pubDate.toISOString()}>{fmtDate(post.data.pubDate)}</time> · {readingMinutes(post)} min read</p>
+  </div>
+</article>

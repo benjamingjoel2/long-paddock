@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import Credit from '../../components/Credit.astro';
+import { PHOTOS } from '../../data/photos';
+import { DESTINATIONS } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return DESTINATIONS.map((d) => ({ params: { slug: d.id }, props: { dest: d } }));
+}
+const { dest } = Astro.props;
+const posts = (await getPosts()).filter((p) => p.data.destinations.includes(dest.id));
+const photo = PHOTOS[dest.photo];
+---
+<Base title={dest.name} description={`Travel stories about ${dest.name}, ${dest.state}: ${dest.blurb}`} crumbs={[{ name: 'Destinations', href: '/destinations/' }, { name: dest.name, href: `/destinations/${dest.id}/` }]}>
+  <div class="wrap page-head">
+    <p class="kicker">{dest.state}</p>
+    <h1>{dest.name}</h1>
+    <p class="standfirst">{dest.blurb}</p>
+  </div>
+  <figure class="wrap dest-hero">
+    <Image src={photo.src} alt={photo.alt} widths={[480, 800, 1200, 1600]} sizes="(min-width: 80rem) 1200px, 100vw" format="webp" loading="eager" class="dest-hero-img" />
+    <figcaption><Credit photo={dest.photo} withCaption /></figcaption>
+  </figure>
+  <div class="wrap grid-3">
+    {posts.map((p) => <PostCard post={p} headingLevel="h2" />)}
+  </div>
+  {posts.length === 0 && <p class="wrap">No stories here yet.</p>}
+</Base>

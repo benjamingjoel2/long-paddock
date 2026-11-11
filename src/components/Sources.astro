@@ -1,0 +1,17 @@
+---
+import { fmtDate } from '../data/site';
+interface Props { sources: { title: string; publisher: string; url: string }[]; checked: Date }
+const { sources, checked } = Astro.props;
+const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
+---
+{sources.length > 0 && (
+  <section class="sources" aria-labelledby="sources-title">
+    <h2 id="sources-title">Sources</h2>
+    <p class="fine">Facts in this story were checked against these pages on {fmtDate(checked)}. Rules, closures and entry requirements change, so check the official page before you travel.</p>
+    <ol>
+      {sources.map((s) => (
+        <li><a href={s.url} rel="nofollow">{s.publisher}: {s.title}</a> <span class="host">{host(s.url)}</span></li>
+      ))}
+    </ol>
+  </section>
+)}

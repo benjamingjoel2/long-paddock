@@ -1,0 +1,17 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../data/site';
+---
+<Page title="Terms of use" path="/terms/" description="The terms for using Long Paddock, including how to rely on travel information." kicker="Legal">
+  <p>Long Paddock (longpaddock.tourground.com) is published by Tourground. By using the site you agree to these terms.</p>
+  <h2>Travel information</h2>
+  <p>We write carefully and link official sources, but rules, fees, closures, entry requirements and conditions change, sometimes at short notice. Stories are general information, not professional, legal, medical or safety advice for your circumstances. Check the official sources and current conditions before you travel, and follow the instructions of park staff and local authorities.</p>
+  <h2>Operators and other sites</h2>
+  <p>We link to official websites and to operators in the Tourground directory. We do not control those sites. Any booking you make is between you and the operator, on that operator's terms.</p>
+  <h2>Content and photographs</h2>
+  <p>Text on this site is © Tourground unless stated otherwise. Photographs belong to their creators and are used under the licences listed on our <a href="/photo-credits/">photo credits</a> page; you may reuse them under those licences.</p>
+  <h2>Liability</h2>
+  <p>To the extent the law allows, Tourground is not liable for loss arising from reliance on information on this site. Nothing in these terms limits rights you have under the Australian Consumer Law or other law that cannot be excluded.</p>
+  <h2>Contact</h2>
+  <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+</Page>

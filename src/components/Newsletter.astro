@@ -1,0 +1,31 @@
+---
+import { SITE } from '../data/site';
+interface Props { id?: string }
+const { id = 'newsletter' } = Astro.props;
+const subject = 'Subscribe to Long Paddock';
+const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}`;
+---
+<section class="newsletter" aria-labelledby={`${id}-title`}>
+  <div class="newsletter-inner">
+    <h2 id={`${id}-title`}>New stories, by email</h2>
+    <p>When we publish a new story or update a fact that matters for planning, we send a short note. No more than one email a month, and you can leave at any time.</p>
+    <form class="newsletter-form" action={mailto} method="get" data-mailto={SITE.email} data-subject={subject}>
+      <label for={`${id}-email`}>Your email address</label>
+      <div class="newsletter-row">
+        <input id={`${id}-email`} name="body" type="email" autocomplete="email" required inputmode="email" />
+        <button type="submit" class="button">Sign up</button>
+      </div>
+      <p class="fine">Signing up opens an email to {SITE.email} from your own mail app; we add you to the list by hand. We use your address only to send Long Paddock. See our <a href="/privacy/">privacy notice</a>.</p>
+    </form>
+  </div>
+</section>
+<script>
+  document.querySelectorAll<HTMLFormElement>('form.newsletter-form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (form.querySelector('input[type=email]') as HTMLInputElement).value.trim();
+      const body = `Please add ${email} to the Long Paddock email list.`;
+      window.location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent(form.dataset.subject || '')}&body=${encodeURIComponent(body)}`;
+    });
+  });
+</script>

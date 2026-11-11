@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { CATEGORIES } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return CATEGORIES.filter((c) => c.id !== 'destinations').map((c) => ({ params: { slug: c.id }, props: { cat: c } }));
+}
+const { cat } = Astro.props;
+const posts = (await getPosts()).filter((p) => p.data.categories.includes(cat.id));
+---
+<Base title={cat.name} description={`${cat.name}: ${cat.blurb}`} crumbs={[{ name: cat.name, href: cat.href }]}>
+  <div class="wrap page-head">
+    <h1>{cat.name}</h1>
+    <p class="standfirst">{cat.blurb}</p>
+  </div>
+  <div class="wrap grid-3">
+    {posts.map((p) => <PostCard post={p} headingLevel="h2" />)}
+  </div>
+</Base>

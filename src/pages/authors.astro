@@ -1,0 +1,23 @@
+---
+import Page from '../layouts/Page.astro';
+import { AUTHORS, SITE } from '../data/site';
+import { getPosts, postHref } from '../lib/posts';
+const posts = await getPosts();
+---
+<Page title="Authors" path="/authors/" description="Who writes and checks the stories on Long Paddock." kicker="Who writes Long Paddock">
+  {Object.entries(AUTHORS).map(([id, a]) => {
+    const mine = posts.filter((p) => p.data.author === id);
+    return (
+      <section>
+        <h2>{a.name}</h2>
+        <p class="meta">{a.role}</p>
+        <p>{a.bio}</p>
+        <p>The desk writes in a warm, first-hand editorial voice, but we do not invent personal anecdotes, people or quotes. Where a story describes a place, that description is checked against official and park sources rather than presented as a diary entry.</p>
+        <h3>Stories</h3>
+        <ul>{mine.map((p) => <li><a href={postHref(p)}>{p.data.title}</a></li>)}</ul>
+      </section>
+    );
+  })}
+  <h2>Writing for us</h2>
+  <p>We would like to add named contributors who know particular regions well. If that is you, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+</Page>

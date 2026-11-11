@@ -1,0 +1,113 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PlanBox from '../../components/PlanBox.astro';
+import Sources from '../../components/Sources.astro';
+import PostCard from '../../components/PostCard.astro';
+import Credit from '../../components/Credit.astro';
+import { PHOTOS } from '../../data/photos';
+import { AUTHORS, SITE, catHref, catName, destName, fmtDate, isoDate } from '../../data/site';
+import { getPosts, postHref, readingMinutes, related, wordCount, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
+}
+
+const { post, all } = Astro.props as { post: Post; all: Post[] };
+const { Content } = await render(post);
+const d = post.data;
+const photo = PHOTOS[d.hero];
+const author = AUTHORS[d.author];
+const rel = related(post, all);
+const url = new URL(postHref(post), SITE.url).href;
+const primary = d.categories[0];
+
+const og = await getImage({ src: photo.src, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 });
+const heroWidths = [480, 800, 1200, 1600, 2000];
+const heroSizes = '(min-width: 80rem) 1200px, 100vw';
+const heroPre = await getImage({ src: photo.src, widths: heroWidths, sizes: heroSizes, format: 'webp', quality: 68 });
+
+const blogPosting = {
+  '@type': 'BlogPosting',
+  '@id': `${url}#article`,
+  headline: d.title,
+  description: d.description,
+  url,
+  mainEntityOfPage: url,
+  image: { '@type': 'ImageObject', url: new URL(og.src, SITE.url).href, width: 1200, height: 630 },
+  datePublished: isoDate(d.pubDate),
+  dateModified: isoDate(d.updatedDate),
+  inLanguage: SITE.lang,
+  wordCount: wordCount(post),
+  articleSection: catName(primary),
+  keywords: [...d.categories.map(catName), ...d.destinations.map(destName)].join(', '),
+  author: { '@type': 'Organization', name: author.name, url: `${SITE.url}/authors/` },
+  publisher: { '@id': `${SITE.url}/#publisher` },
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  ...(d.sources.length ? { citation: d.sources.map((s) => s.url) } : {}),
+};
+---
+<Base
+  title={d.title}
+  description={d.description}
+  ogType="article"
+  ogImage={og.src}
+  crumbs={[{ name: catName(primary), href: catHref(primary) }, { name: d.title, href: postHref(post) }]}
+  extraJsonLd={[blogPosting]}
+  preloadImage={{ srcset: heroPre.srcSet.attribute, sizes: heroSizes, type: 'image/webp' }}
+>
+  <article class="post">
+    <header class="post-head wrap-text">
+      {d.advertisement && (
+        <p class="ad-banner"><span class="ad-label">Advertisement feature</span> Paid for by {d.advertisement.sponsor}. <a href="/disclosure/">How we label paid content</a>.</p>
+      )}
+      <p class="kicker">
+        {d.categories.map((c, i) => <>{i > 0 && ' · '}<a href={catHref(c)}>{catName(c)}</a></>)}
+      </p>
+      <h1>{d.title}</h1>
+      <p class="standfirst">{d.description}</p>
+      <p class="byline">
+        By <a href="/authors/">{author.name}</a>
+        <span class="sep">·</span>
+        Published <time datetime={isoDate(d.pubDate)}>{fmtDate(d.pubDate)}</time>
+        <span class="sep">·</span>
+        Last updated <time datetime={isoDate(d.updatedDate)}>{fmtDate(d.updatedDate)}</time>
+        <span class="sep">·</span>
+        {readingMinutes(post)} min read
+      </p>
+    </header>
+
+    <figure class="hero">
+      <Image src={photo.src} alt={photo.alt} widths={heroWidths} sizes={heroSizes} format="webp" quality={68} loading="eager" fetchpriority="high" class="hero-img" />
+      <figcaption class="wrap-text"><Credit photo={d.hero} withCaption /></figcaption>
+    </figure>
+
+    <div class="wrap-text">
+      <p class="checked-note">
+        Visa, park and safety details in this story link to the official source and were last checked on <strong>{fmtDate(d.updatedDate)}</strong>. Rules change, so check those pages before you travel.
+      </p>
+      <div class="prose">
+        <Content />
+      </div>
+
+      <PlanBox operator={d.operator} sponsored={Boolean(d.advertisement)} />
+
+      <Sources sources={d.sources} checked={d.updatedDate} />
+
+      {d.destinations.length > 0 && (
+        <p class="tags"><span>More on</span> {d.destinations.map((x) => <a href={`/destinations/${x}/`}>{destName(x)}</a>)}</p>
+      )}
+    </div>
+  </article>
+
+  {rel.length > 0 && (
+    <section class="wrap related" aria-labelledby="related-title">
+      <h2 id="related-title" class="section-title">Related stories</h2>
+      <div class="grid-3">
+        {rel.map((p) => <PostCard post={p} />)}
+      </div>
+    </section>
+  )}
+</Base>

@@ -1,0 +1,29 @@
+---
+import Base from './Base.astro';
+import { SITE, fmtDate, isoDate } from '../data/site';
+interface Props { title: string; description: string; path: string; updated?: string; kicker?: string }
+const { title, description, path, updated = SITE.launched, kicker = 'About this site' } = Astro.props;
+const d = new Date(updated);
+const url = new URL(path, SITE.url).href;
+const webPage = {
+  '@type': 'WebPage',
+  '@id': `${url}#webpage`,
+  name: title,
+  description,
+  url,
+  dateModified: isoDate(d),
+  inLanguage: SITE.lang,
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  publisher: { '@id': `${SITE.url}/#publisher` },
+};
+---
+<Base title={title} description={description} crumbs={[{ name: title, href: path }]} extraJsonLd={[webPage]}>
+  <article class="wrap-text page">
+    <p class="kicker">{kicker}</p>
+    <h1>{title}</h1>
+    <p class="byline">Last updated <time datetime={isoDate(d)}>{fmtDate(d)}</time></p>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</Base>

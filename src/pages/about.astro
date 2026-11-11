@@ -1,0 +1,29 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../data/site';
+---
+<Page title="About Long Paddock" path="/about/" description="What Long Paddock is, who publishes it, and how we write and check our Australia travel stories.">
+  <p>Long Paddock is a travel blog for people planning a trip to Australia. We write story-led, practical pieces about the outback, the reef, road trips, wildlife and the cities, and we try to answer the questions that decide whether a trip works: when to go, how far things really are, what needs booking and what the rules are on the ground.</p>
+  <p>The name comes from the old droving term for the public roads and stock routes where cattle grazed on the move. It felt right for a blog about covering long distances well.</p>
+
+  <h2>Published by Tourground</h2>
+  <p><strong>Long Paddock is published by <a href={SITE.publisher.url}>Tourground</a>.</strong> Tourground runs a directory of verified travel companies around the world. Every story here ends with a "Plan this trip" box pointing to a local operator in that directory, such as <a href="https://outbackandreef.tourground.com/">Outback &amp; Reef</a>. Because the blog and the directory are run by the same company, we explain the relationship in full in our <a href="/disclosure/">disclosure</a>.</p>
+
+  <h2>How we write</h2>
+  <ul>
+    <li><strong>Story first, then the practical detail.</strong> We want you to feel the place and come away knowing what to book.</li>
+    <li><strong>Official sources for the facts that matter.</strong> Visa and entry rules, park passes and permits, closures and safety advice link to the government or park authority that sets them. Each story lists its sources at the end.</li>
+    <li><strong>Dated.</strong> Every story shows when it was published and when it was last updated. Rules and closures change; check the official page before you travel.</li>
+    <li><strong>Nothing invented.</strong> We do not publish made-up reviews, quotes, prices or statistics. We leave prices out altogether because they go out of date quickly; the official pages we link carry the current fees.</li>
+    <li><strong>Respect for Country.</strong> We use the names and follow the requests of Traditional Owners as the parks themselves publish them.</li>
+  </ul>
+
+  <h2>Paid content</h2>
+  <p>No operator pays to appear in our stories. If we ever publish paid content, it will be labelled "Advertisement feature" at the top of the page, on every card that links to it, and in the plan box, and its links will be marked as sponsored.</p>
+
+  <h2>Photography</h2>
+  <p>We use real photographs of the places we write about, credited on each page and listed on our <a href="/photo-credits/">photo credits</a> page with their licences.</p>
+
+  <h2>Corrections and contact</h2>
+  <p>If something on this site is wrong or out of date, please tell us at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. We correct errors and update the "last updated" date when we do.</p>
+</Page>

@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Credit from '../components/Credit.astro';
+import { PHOTOS } from '../data/photos';
+import { CATEGORIES, DESTINATIONS, SITE, catName, fmtDate } from '../data/site';
+import { getPosts, postHref, readingMinutes } from '../lib/posts';
+
+const posts = await getPosts();
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const latest = posts.filter((p) => p.id !== featured.id).slice(0, 6);
+const startIds = ['first-timers-guide-to-australia', 'australia-seasons-when-to-go', 'three-week-australia-itinerary'];
+const startHere = startIds.map((id) => posts.find((p) => p.id === id)).filter((p) => p !== undefined);
+const fPhoto = PHOTOS[featured.data.hero];
+---
+<Base title={SITE.name} description={SITE.description}>
+  <section class="featured" aria-labelledby="featured-title">
+    <figure class="featured-media">
+      <Image src={fPhoto.src} alt={fPhoto.alt} widths={[480, 800, 1200, 1600, 2000]} sizes="100vw" format="webp" loading="eager" fetchpriority="high" class="featured-img" />
+      <figcaption class="wrap"><Credit photo={featured.data.hero} withCaption /></figcaption>
+    </figure>
+    <div class="wrap">
+      <div class="featured-text">
+        <p class="kicker">Featured story · {catName(featured.data.categories[0])}</p>
+        <h1 id="featured-title"><a href={postHref(featured)}>{featured.data.title}</a></h1>
+        <p class="standfirst">{featured.data.description}</p>
+        <p class="meta">{fmtDate(featured.data.pubDate)} · {readingMinutes(featured)} min read</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="start-here" aria-labelledby="start-title">
+    <div class="wrap">
+      <h2 id="start-title" class="section-title">Start here</h2>
+      <p class="section-intro">First trip to Australia? These three stories cover the questions almost everyone has: entry, distance, seasons and how much to try to see.</p>
+      <ol class="start-list">
+        {startHere.map((p, i) => (
+          <li>
+            <span class="start-num" aria-hidden="true">{i + 1}</span>
+            <div>
+              <a href={postHref(p)}>{p.data.title}</a>
+              <p>{p.data.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="latest-title">
+    <div class="section-head">
+      <h2 id="latest-title" class="section-title">Latest stories</h2>
+      <a href="/stories/">All stories</a>
+    </div>
+    <div class="grid-3">
+      {latest.map((p) => <PostCard post={p} />)}
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="dest-title">
+    <div class="section-head">
+      <h2 id="dest-title" class="section-title">Destinations</h2>
+      <a href="/destinations/">All destinations</a>
+    </div>
+    <ul class="dest-grid">
+      {DESTINATIONS.map((d) => (
+        <li class="dest-tile">
+          <Image src={PHOTOS[d.photo].src} alt="" widths={[320, 480, 640]} sizes="(min-width: 64rem) 280px, 50vw" loading="lazy" class="dest-img" />
+          <a href={`/destinations/${d.id}/`}><span class="dest-name">{d.name}</span><span class="dest-state">{d.state}</span></a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="wrap" aria-labelledby="cat-title">
+    <h2 id="cat-title" class="section-title">Browse by theme</h2>
+    <ul class="cat-list">
+      {CATEGORIES.filter((c) => c.id !== 'destinations').map((c) => (
+        <li><a href={c.href}>{c.name}</a><p>{c.blurb}</p></li>
+      ))}
+    </ul>
+  </section>
+
+  <div class="wrap"><Newsletter /></div>
+</Base>

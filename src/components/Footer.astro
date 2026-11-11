@@ -1,0 +1,44 @@
+---
+import { CATEGORIES, DESTINATIONS, SITE } from '../data/site';
+const year = new Date(SITE.launched).getUTCFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-about">
+      <p class="footer-name">Long Paddock</p>
+      <p>Story-led, practical travel writing for planning a trip to Australia. Facts on visas, parks and safety link to the official source.</p>
+      <p class="published-by"><strong>Published by <a href={SITE.publisher.url}>Tourground</a>.</strong></p>
+      <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    </div>
+    <div>
+      <p class="footer-head">Destinations</p>
+      <ul>
+        {DESTINATIONS.map((d) => <li><a href={`/destinations/${d.id}/`}>{d.name}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <p class="footer-head">Stories</p>
+      <ul>
+        {CATEGORIES.filter((c) => c.id !== 'destinations').map((c) => <li><a href={c.href}>{c.name}</a></li>)}
+        <li><a href="/stories/">All stories</a></li>
+        <li><a href="/rss.xml">RSS feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-head">About</p>
+      <ul>
+        <li><a href="/about/">About Long Paddock</a></li>
+        <li><a href="/authors/">Authors</a></li>
+        <li><a href="/disclosure/">Disclosure</a></li>
+        <li><a href="/photo-credits/">Photo credits</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/cookies/">Cookies</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-base">
+    <p>We acknowledge the Traditional Custodians of Country throughout Australia and their continuing connection to land, sea and community. We pay our respects to Elders past and present.</p>
+    <p>© {year} Tourground · Long Paddock · longpaddock.tourground.com</p>
+  </div>
+</footer>

@@ -1,0 +1,12 @@
+---
+import { PHOTOS } from '../data/photos';
+interface Props { photo: string; withCaption?: boolean }
+const { photo: key, withCaption = false } = Astro.props;
+const p = PHOTOS[key];
+---
+{p && (
+  <span class="credit">
+    {withCaption && <span>{p.place}. </span>}
+    Photo: <a href={p.sourceUrl} rel="nofollow">{p.author}</a>, <a href={p.licenseUrl} rel="license nofollow">{p.license}</a>
+  </span>
+)}

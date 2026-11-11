@@ -1,0 +1,19 @@
+---
+import { Image } from 'astro:assets';
+import Page from '../layouts/Page.astro';
+import { PHOTOS } from '../data/photos';
+---
+<Page title="Photo credits" path="/photo-credits/" description="Credits and licences for every photograph used on Long Paddock.">
+  <p>Every photograph on Long Paddock is a real photograph of the place shown, used under a Creative Commons or public domain licence from Wikimedia Commons. Images may be cropped and resized. Follow the links for the original file, the photographer and the full licence.</p>
+  <ul class="credit-list">
+    {Object.entries(PHOTOS).map(([key, p]) => (
+      <li id={key}>
+        <Image src={p.src} alt="" widths={[160, 320]} sizes="160px" loading="lazy" class="credit-thumb" />
+        <div>
+          <p class="credit-place">{p.place}</p>
+          <p>By {p.author}. Licence: <a href={p.licenseUrl} rel="license nofollow">{p.license}</a>. <a href={p.sourceUrl} rel="nofollow">Original file on Wikimedia Commons</a>.</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</Page>
